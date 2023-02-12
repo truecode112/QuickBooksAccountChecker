@@ -88,6 +88,7 @@ namespace QBOAccountChecker.Controllers
                     }
 
                     Log.Debug("Start Get User Info");
+                    
                     UserInfoResponse userInfoResp = await auth2Client.GetUserInfoAsync(access_token);
                     Log.Debug("End Get User Info");
                     if (userInfoResp == null)
@@ -119,18 +120,30 @@ namespace QBOAccountChecker.Controllers
                     //Account accountInfo = querySvc.ExecuteIdsQuery(string.Format("SELECT * FROM Account where Name like '%{0}%'", givenName)).FirstOrDefault();
                     ReadOnlyCollection<Account> accountInfo = querySvc.ExecuteIdsQuery(string.Format("SELECT * FROM Account"));
 
-                    foreach (Account acc in accountInfo)
-                    {
-                        Log.Debug((Newtonsoft.Json.JsonConvert.SerializeObject(acc)));
-                    }
-
-                    //string output = "Company Name: " + companyInfo.CompanyName + " Company Address: " + companyInfo.CompanyAddr.Line1 + ", " + companyInfo.CompanyAddr.City + ", " + companyInfo.CompanyAddr.Country + " " + companyInfo.CompanyAddr.PostalCode;
                     if (accountInfo == null)
                     {
                         return View("ApiCallService", (object)("QBO API call Failed!" + " Error message: Can not find user"));
                     }
+
+                    AccountViewModel accountViewModel = new AccountViewModel()
+                    {
+                        Accounts = accountInfo.ToList<Account>()
+                    };
+
+                    /*foreach (Account acc in accountInfo)
+                    {
+                        //Log.Debug((Newtonsoft.Json.JsonConvert.SerializeObject(acc)));
+                        accountModel.Add(new AccountModel
+                        {
+                            Name = acc.Name
+                        });
+
+
+                    }*/
+                    //string output = "Company Name: " + companyInfo.CompanyName + " Company Address: " + companyInfo.CompanyAddr.Line1 + ", " + companyInfo.CompanyAddr.City + ", " + companyInfo.CompanyAddr.Country + " " + companyInfo.CompanyAddr.PostalCode;
+
                     //string output = accountInfo.Id.ToString();
-                    return View("ApiCallService", (object)("QBO API call Successful!! Response: " + givenName));
+                    return View("ApiCallService", accountViewModel);
                 }
                 catch (Exception ex)
                 {

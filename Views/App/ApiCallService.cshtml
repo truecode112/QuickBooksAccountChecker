@@ -1,11 +1,34 @@
-﻿@model string
+﻿
+@model AccountViewModel
 @{
     ViewBag.Title = "API Call Response";
 }
 
 <h2>API Call Response</h2>
 
-<p style="word-wrap: break-word;">@Model</p>
+<p style="word-wrap: break-word;">@Model.Accounts.Count accounts available</p>
+
+<table class="table table-bordered table-responsive table-hover">
+    <tr>
+        <th>Name</th>
+        <th>Account Type</th>
+        <th>Current Balance</th>
+        <th>Created Time</th>
+    </tr>
+    @foreach (var account in Model.Accounts)
+    {
+        <tr>
+            <td>@account.Name</td>
+            <td>@account.AccountType</td>
+            <td>@account.CurrentBalance @account.CurrencyRef.Value</td>
+            <td>@account.MetaData.CreateTime</td>
+        </tr>
+    }
+</table>
+<ul>
+    
+</ul>
+
 
 
 
